@@ -24,7 +24,7 @@ export default function JoinAdsify() {
               <p className="text-xs text-teal-700 mt-0.5">Use our official Google Form to submit your application details directly.</p>
             </div>
             <a
-              href="https://docs.google.com/forms/d/1df9kknwamNOlRoYzsMrNkARWcVVgkVTRbobhcIgmpow/viewform"
+              href="https://docs.google.com/forms/d/1ghTqL9kEEV0O7PretEaYF1jvSEti-GECl3meDNyPtmc/viewform"
               target="_blank"
               rel="noreferrer"
               className="shrink-0 px-4 py-2 rounded bg-teal-600 text-white text-xs font-medium hover:bg-teal-700 transition-colors shadow-sm"
