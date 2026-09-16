@@ -7,13 +7,12 @@ import type { Creator, Editor, SocialManager, RequirementFormData, JoinFormData 
 export interface ApplicationRecord {
   id: string
   created_at?: string
-  submittedAt?: string
+  submittedAt: string
   name: string
   email: string
   phone: string
   city: string
-  applicant_type?: string
-  type?: string
+  type: string
   portfolio: string
   status: 'pending' | 'approved' | 'rejected'
 }
@@ -116,9 +115,9 @@ export async function fetchApplications(): Promise<ApplicationRecord[]> {
         email: item.email,
         phone: item.phone,
         city: item.city,
-        type: item.applicant_type,
-        portfolio: item.portfolio,
-        status: item.status || 'pending',
+        type: item.applicant_type || 'creator',
+        portfolio: item.portfolio || '',
+        status: (item.status === 'approved' || item.status === 'rejected' ? item.status : 'pending') as 'pending' | 'approved' | 'rejected',
       }))
     }
   } catch (err) {
