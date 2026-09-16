@@ -4,7 +4,7 @@ import { CheckCircle2, XCircle, ShieldCheck, Eye, Search, Layers, FileText, User
 import { CREATORS } from '@/data/creators'
 import { EDITORS } from '@/data/editors'
 import { SOCIAL_MANAGERS } from '@/data/socialManagers'
-import { fetchApplications } from '@/lib/services'
+import { fetchApplications, submitTalentApplication } from '@/lib/services'
 import type { JoinFormData } from '@/types'
 
 interface ApplicationMock {
@@ -19,8 +19,9 @@ interface ApplicationMock {
 }
 
 export default function Admin() {
-  const [activeTab, setActiveTab] = useState<'talent' | 'applications' | 'leads'>('talent')
+  const [activeTab, setActiveTab] = useState<'talent' | 'applications' | 'google-forms'>('talent')
   const [searchQuery, setSearchQuery] = useState('')
+  const [testSuccessMessage, setTestSuccessMessage] = useState('')
   const [talentList, setTalentList] = useState(() => {
     return [
       ...CREATORS.map((c) => ({ id: c.id, name: c.name, type: 'Creator', location: c.location, category: c.category, verified: c.verified, status: 'approved' })),
@@ -50,16 +51,6 @@ export default function Admin() {
       portfolio: 'https://behance.net/priyaverma',
       status: 'pending',
     },
-    {
-      id: 'app-103',
-      submittedAt: '2026-09-12',
-      name: 'Karan Malhotra',
-      city: 'Delhi',
-      email: 'karan@socialgrowth.com',
-      type: 'social-media',
-      portfolio: 'https://linkedin.com/in/karan-social',
-      status: 'approved',
-    },
   ])
 
   useEffect(() => {
@@ -71,6 +62,24 @@ export default function Admin() {
     }
     loadData()
   }, [])
+
+  async function handleSimulateGoogleFormQuery() {
+    const sample = {
+      applicantType: 'creator' as const,
+      name: `Applicant (Google Form ${Math.floor(Math.random() * 900 + 100)})`,
+      email: 'googleform.applicant@example.com',
+      phone: '+91 98290 12345',
+      city: 'Jaipur',
+      bio: 'Submitted via Google Form integration.',
+      portfolio: 'https://drive.google.com/sample-portfolio',
+      services: ['Instagram Reel', 'Brand Shoot'],
+    }
+    await submitTalentApplication(sample)
+    const updated = await fetchApplications()
+    setApplications(updated)
+    setTestSuccessMessage('Simulated Google Form query successfully sent to Supabase & loaded into Admin Panel!')
+    setTimeout(() => setTestSuccessMessage(''), 5000)
+  }
 
   function toggleVerification(id: string) {
     setTalentList((prev) =>
@@ -105,17 +114,17 @@ export default function Admin() {
             </span>
             <h1 className="text-3xl font-semibold mt-2">Admin Dashboard</h1>
             <p className="text-sm text-ink-soft mt-1">
-              Review applicant submissions, manage Jaipur talent profiles, and moderate campaign requirement leads.
+              Review applicant submissions, manage Jaipur talent profiles, and receive live Google Form queries.
             </p>
           </div>
-          <div className="flex items-center gap-2 bg-white p-1 rounded-md border border-line">
+          <div className="flex items-center gap-1.5 bg-white p-1 rounded-md border border-line flex-wrap">
             <button
               onClick={() => setActiveTab('talent')}
               className={`px-3 py-1.5 rounded text-xs font-medium transition-colors ${
                 activeTab === 'talent' ? 'bg-ink text-paper' : 'text-ink-soft hover:text-ink'
               }`}
             >
-              Talent Directory ({talentList.length})
+              Talent ({talentList.length})
             </button>
             <button
               onClick={() => setActiveTab('applications')}
@@ -124,6 +133,14 @@ export default function Admin() {
               }`}
             >
               Applications ({applications.filter((a) => a.status === 'pending').length} pending)
+            </button>
+            <button
+              onClick={() => setActiveTab('google-forms')}
+              className={`px-3 py-1.5 rounded text-xs font-medium transition-colors ${
+                activeTab === 'google-forms' ? 'bg-teal-600 text-white' : 'text-ink-soft hover:text-ink'
+              }`}
+            >
+              Google Forms Sync
             </button>
           </div>
         </div>
@@ -243,6 +260,91 @@ export default function Admin() {
                   </div>
                 </div>
               ))}
+            </div>
+          </div>
+        )}
+        {activeTab === 'google-forms' && (
+          <div className="space-y-6 max-w-3xl">
+            <div className="hairline rounded-lg bg-white p-6 shadow-card space-y-4">
+              <div className="flex items-center justify-between border-b border-line pb-4">
+                <div>
+                  <h2 className="text-xl font-semibold text-ink">Google Forms Automatic Sync</h2>
+                  <p className="text-xs sm:text-sm text-ink-soft mt-1">
+                    Connect any Google Form so that whenever a talent fills out your form, their submission is automatically sent to Supabase and appears here live!
+                  </p>
+                </div>
+                <button
+                  onClick={handleSimulateGoogleFormQuery}
+                  className="px-4 py-2 rounded bg-teal-600 text-white text-xs font-medium hover:bg-teal-700 transition-colors shrink-0"
+                >
+                  Test Query Simulator
+                </button>
+              </div>
+
+              {testSuccessMessage && (
+                <div className="p-3 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs rounded font-medium">
+                  {testSuccessMessage}
+                </div>
+              )}
+
+              <div className="space-y-3 pt-2 text-sm">
+                <h3 className="font-semibold text-ink">1-Minute Setup Instructions:</h3>
+                <ol className="list-decimal list-inside space-y-2 text-xs sm:text-sm text-ink-soft">
+                  <li>Open your Google Form in Google Drive.</li>
+                  <li>Click the <strong>3 dots (⋮)</strong> at the top right → select <strong>Extensions</strong> → <strong>Apps Script</strong>.</li>
+                  <li>Delete any default code, paste the script below, and click <strong>Save (⌘S or Ctrl+S)</strong>.</li>
+                  <li>Click <strong>Triggers (Alarm Clock icon on left)</strong> → Add Trigger → Select Event Source: <strong>From form</strong> → Event Type: <strong>On form submit</strong>. Save!</li>
+                </ol>
+              </div>
+
+              <div className="pt-3">
+                <label className="block text-xs font-semibold text-ink-soft mb-1 uppercase tracking-wider">
+                  Copy-and-Paste Google Apps Script Code:
+                </label>
+                <textarea
+                  readOnly
+                  rows={14}
+                  className="w-full font-mono text-xs p-3.5 bg-paper rounded border border-line text-ink leading-relaxed select-all"
+                  value={`function onFormSubmit(e) {
+  var itemResponses = e.response.getItemResponses();
+  var name = "", email = "", phone = "", city = "Jaipur", type = "creator", portfolio = "", bio = "";
+  
+  for (var i = 0; i < itemResponses.length; i++) {
+    var title = itemResponses[i].getItem().getTitle().toLowerCase();
+    var response = itemResponses[i].getResponse();
+    if (title.indexOf("name") !== -1) name = response;
+    else if (title.indexOf("email") !== -1) email = response;
+    else if (title.indexOf("phone") !== -1 || title.indexOf("mobile") !== -1) phone = response;
+    else if (title.indexOf("city") !== -1 || title.indexOf("location") !== -1) city = response;
+    else if (title.indexOf("type") !== -1 || title.indexOf("role") !== -1) type = response;
+    else if (title.indexOf("portfolio") !== -1 || title.indexOf("link") !== -1) portfolio = response;
+    else if (title.indexOf("bio") !== -1 || title.indexOf("about") !== -1) bio = response;
+  }
+  
+  var payload = {
+    applicant_type: type.toString().toLowerCase().indexOf("editor") !== -1 ? "editor" : (type.toString().toLowerCase().indexOf("social") !== -1 ? "social-media" : "creator"),
+    name: name || "Google Form Applicant",
+    email: email || "noemail@provided.com",
+    phone: phone || "Not Provided",
+    city: city || "Jaipur",
+    portfolio: portfolio || "",
+    bio: bio || "Submitted via Google Form",
+    status: "pending"
+  };
+  
+  UrlFetchApp.fetch("https://vzzjyravmxjluqnwskhm.supabase.co/rest/v1/applications", {
+    method: "post",
+    headers: {
+      "apikey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ6emp5cmF2bXhqbHVxbndza2htIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk1NzQ5NzksImV4cCI6MjEwNTE1MDk3OX0.leQWk5e4BEkMkKwRNcygYXZDAw1eFf0o11RVvSv6tds",
+      "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ6emp5cmF2bXhqbHVxbndza2htIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk1NzQ5NzksImV4cCI6MjEwNTE1MDk3OX0.leQWk5e4BEkMkKwRNcygYXZDAw1eFf0o11RVvSv6tds",
+      "Content-Type": "application/json",
+      "Prefer": "return=representation"
+    },
+    payload: JSON.stringify(payload)
+  });
+}`}
+                />
+              </div>
             </div>
           </div>
         )}
