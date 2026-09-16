@@ -4,19 +4,8 @@ import { CheckCircle2, XCircle, ShieldCheck, Eye, Search, Layers, FileText, User
 import { CREATORS } from '@/data/creators'
 import { EDITORS } from '@/data/editors'
 import { SOCIAL_MANAGERS } from '@/data/socialManagers'
-import { fetchApplications, submitTalentApplication } from '@/lib/services'
+import { fetchApplications, submitTalentApplication, type ApplicationRecord } from '@/lib/services'
 import type { JoinFormData } from '@/types'
-
-interface ApplicationMock {
-  id: string
-  submittedAt: string
-  name: string
-  city: string
-  email: string
-  type: string
-  portfolio: string
-  status: 'pending' | 'approved' | 'rejected'
-}
 
 export default function Admin() {
   const [activeTab, setActiveTab] = useState<'talent' | 'applications' | 'google-forms'>('talent')
@@ -30,25 +19,29 @@ export default function Admin() {
     ]
   })
 
-  const [applications, setApplications] = useState<ApplicationMock[]>([
+  const [applications, setApplications] = useState<ApplicationRecord[]>([
     {
       id: 'app-101',
       submittedAt: '2026-09-15',
       name: 'Rohan Sharma',
+      phone: '+91 98290 11111',
       city: 'Jaipur',
       email: 'rohan.sharma@example.com',
       type: 'creator',
       portfolio: 'https://instagram.com/rohan_creates',
+      bio: 'Lifestyle creator with 45K followers and 6.2% engagement rate.',
       status: 'pending',
     },
     {
       id: 'app-102',
       submittedAt: '2026-09-14',
       name: 'Priya Verma',
+      phone: '+91 98290 22222',
       city: 'Jaipur',
       email: 'priya.edits@example.com',
       type: 'editor',
       portfolio: 'https://behance.net/priyaverma',
+      bio: 'Reels and YouTube editor with 4 years Premiere Pro experience.',
       status: 'pending',
     },
   ])
@@ -227,10 +220,49 @@ export default function Admin() {
                       </span>
                       <span className="text-xs text-ink-faint">Submitted {app.submittedAt}</span>
                     </div>
-                    <div className="mt-2 text-xs sm:text-sm text-ink-soft space-y-1">
-                      <p>Location: <span className="font-medium text-ink">{app.city}</span></p>
-                      <p>Portfolio Link: <a href={app.portfolio} target="_blank" rel="noreferrer" className="text-teal-600 hover:underline">{app.portfolio}</a></p>
-                      <p className="text-ink-faint text-xs font-mono">Private Contact: {app.email} (Guarded by Adsify)</p>
+                    <div className="mt-2 text-xs sm:text-sm text-ink-soft space-y-1.5">
+                      <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+                        <p>City: <span className="font-medium text-ink">{app.city}</span></p>
+                        <p>Phone: <span className="font-mono text-ink">{app.phone || 'N/A'}</span></p>
+                        <p>Email: <span className="font-mono text-ink">{app.email}</span></p>
+                      </div>
+
+                      {app.portfolio && (
+                        <p>
+                          Portfolio Link:{' '}
+                          <a
+                            href={app.portfolio.startsWith('http') ? app.portfolio : `https://${app.portfolio}`}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-teal-600 font-medium hover:underline"
+                          >
+                            {app.portfolio}
+                          </a>
+                        </p>
+                      )}
+
+                      {app.bio && (
+                        <p className="text-ink-soft italic bg-paper/60 p-2 rounded text-xs border border-line/60 mt-1">
+                          "{app.bio}"
+                        </p>
+                      )}
+
+                      {app.applicationData && (
+                        <div className="flex flex-wrap gap-2 pt-1 text-[11px]">
+                          {app.applicationData.category && (
+                            <span className="bg-teal-50 text-teal-700 px-2 py-0.5 rounded font-medium">Category: {app.applicationData.category}</span>
+                          )}
+                          {app.applicationData.followers && (
+                            <span className="bg-teal-50 text-teal-700 px-2 py-0.5 rounded font-medium">Followers: {app.applicationData.followers}</span>
+                          )}
+                          {app.applicationData.instagram && (
+                            <span className="bg-paper border border-line text-ink-soft px-2 py-0.5 rounded font-mono">IG: {app.applicationData.instagram}</span>
+                          )}
+                          {app.applicationData.youtube && (
+                            <span className="bg-paper border border-line text-ink-soft px-2 py-0.5 rounded font-mono">YT: {app.applicationData.youtube}</span>
+                          )}
+                        </div>
+                      )}
                     </div>
                   </div>
 
