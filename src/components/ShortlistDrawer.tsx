@@ -58,8 +58,8 @@ export function ShortlistDrawer({ open, onClose }: ShortlistDrawerProps) {
           </div>
         </div>
       ) : (
-        <div className="space-y-4">
-          <div className="flex items-center justify-between border-b border-line pb-2.5">
+        <div className="flex flex-col h-full space-y-4">
+          <div className="flex items-center justify-between border-b border-line pb-2.5 shrink-0">
             <span className="text-xs font-medium text-ink-soft">
               {talent.length} {talent.length === 1 ? 'profile' : 'profiles'} saved
             </span>
@@ -71,7 +71,7 @@ export function ShortlistDrawer({ open, onClose }: ShortlistDrawerProps) {
             </button>
           </div>
 
-          <div className="space-y-2.5 max-h-[calc(100vh-280px)] overflow-y-auto pr-1">
+          <div className="flex-1 overflow-y-auto space-y-2.5 pr-1">
             {talent.map((t) => (
               <div
                 key={t.id}
@@ -109,7 +109,7 @@ export function ShortlistDrawer({ open, onClose }: ShortlistDrawerProps) {
             ))}
           </div>
 
-          <div className="pt-4 border-t border-line space-y-2">
+          <div className="pt-4 border-t border-line space-y-2 shrink-0">
             <Link
               to="/submit-requirement"
               onClick={onClose}
