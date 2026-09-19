@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { MapPin } from 'lucide-react'
 import type { SocialManager } from '@/types'
 import { VerifiedBadge, Pill } from '@/components/ui/Badge'
+import { ProfileAvatar } from '@/components/ui/ProfileAvatar'
 import { ShortlistButton } from '@/components/ShortlistButton'
 import { formatCurrency } from '@/lib/filters'
 
@@ -13,7 +14,7 @@ export function SocialManagerCard({ manager }: { manager: SocialManager }) {
     >
       <div className="flex items-start justify-between gap-2">
         <div className="flex items-center gap-3 min-w-0">
-          <img src={manager.avatarUrl} alt="" className="w-12 h-12 rounded-full object-cover shrink-0" />
+          <ProfileAvatar id={manager.id} name={manager.name} avatarUrl={manager.avatarUrl} />
           <div className="min-w-0">
             <h3 className="font-medium text-[15px] truncate">{manager.name}</h3>
             {manager.verified && <VerifiedBadge />}

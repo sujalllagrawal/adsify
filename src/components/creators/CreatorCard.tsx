@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { MapPin } from 'lucide-react'
 import type { Creator } from '@/types'
 import { VerifiedBadge } from '@/components/ui/Badge'
+import { ProfileAvatar } from '@/components/ui/ProfileAvatar'
 import { ShortlistButton } from '@/components/ShortlistButton'
 import { formatFollowers } from '@/lib/filters'
 
@@ -13,11 +14,7 @@ export function CreatorCard({ creator }: { creator: Creator }) {
     >
       <div className="flex items-start justify-between gap-2">
         <div className="flex items-center gap-3 min-w-0">
-          <img
-            src={creator.avatarUrl}
-            alt=""
-            className="w-12 h-12 rounded-full object-cover shrink-0"
-          />
+          <ProfileAvatar id={creator.id} name={creator.name} avatarUrl={creator.avatarUrl} />
           <div className="min-w-0">
             <div className="flex items-center gap-1.5">
               <h3 className="font-medium text-[15px] truncate">{creator.name}</h3>
