@@ -1,5 +1,5 @@
-import { useState, FormEvent } from 'react'
-import { CheckCircle2 } from 'lucide-react'
+import { useState, FormEvent, ChangeEvent } from 'react'
+import { CheckCircle2, Upload, User, X } from 'lucide-react'
 import {
   CREATOR_CATEGORIES,
   EDITOR_SPECIALIZATIONS,
@@ -26,6 +26,7 @@ const emptyForm: JoinFormData = {
   bio: '',
   portfolio: '',
   services: [],
+  profilePhoto: '',
 }
 
 export function JoinForm() {
@@ -36,6 +37,23 @@ export function JoinForm() {
   function update<K extends keyof JoinFormData>(key: K, value: JoinFormData[K]) {
     setForm((prev) => ({ ...prev, [key]: value }))
     setErrors((prev) => ({ ...prev, [key]: undefined }))
+  }
+
+  function handlePhotoUpload(e: ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        alert('Image size should be under 5MB.')
+        return
+      }
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        if (typeof reader.result === 'string') {
+          update('profilePhoto', reader.result)
+        }
+      }
+      reader.readAsDataURL(file)
+    }
   }
 
   function toggleMulti(key: 'specialization' | 'software' | 'industries' | 'platforms', value: string) {
@@ -91,6 +109,53 @@ export function JoinForm() {
               {TYPE_LABELS[t]}
             </button>
           ))}
+        </div>
+      </Field>
+
+      <Field label="Upload your Profile Photo">
+        <div className="flex items-center gap-4 p-4 border border-dashed border-line rounded-lg bg-paper/40">
+          {form.profilePhoto ? (
+            <div className="relative group shrink-0">
+              <img
+                src={form.profilePhoto}
+                alt="Profile Preview"
+                className="w-16 h-16 rounded-full object-cover border-2 border-teal-500 shadow-sm"
+              />
+              <button
+                type="button"
+                onClick={() => update('profilePhoto', '')}
+                className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full p-0.5 hover:bg-red-600 transition-colors shadow-sm"
+                title="Remove photo"
+              >
+                <X size={14} />
+              </button>
+            </div>
+          ) : (
+            <div className="w-16 h-16 rounded-full bg-teal-50 border border-teal-200 flex items-center justify-center shrink-0 text-teal-600">
+              <User size={28} />
+            </div>
+          )}
+          <div className="flex-1 space-y-1">
+            <div className="flex flex-wrap items-center gap-2">
+              <label className="inline-flex items-center gap-1.5 text-xs font-medium px-3.5 py-2 rounded-md bg-teal-600 text-white hover:bg-teal-700 cursor-pointer transition-colors shadow-sm">
+                <Upload size={14} />
+                <span>{form.profilePhoto ? 'Change Photo' : 'Upload Profile Photo'}</span>
+                <input type="file" accept="image/*" onChange={handlePhotoUpload} className="hidden" />
+              </label>
+              {form.profilePhoto && (
+                <button
+                  type="button"
+                  onClick={() => update('profilePhoto', '')}
+                  className="text-xs text-red-600 hover:underline"
+                >
+                  Remove photo
+                </button>
+              )}
+            </div>
+            <p className="text-[11px] text-ink-soft">
+              Upload a high-quality picture (JPG, PNG or WebP, max 5MB). Applies to all categories.
+            </p>
+          </div>
         </div>
       </Field>
 

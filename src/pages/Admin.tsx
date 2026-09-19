@@ -212,57 +212,70 @@ export default function Admin() {
             <div className="grid gap-4">
               {applications.map((app) => (
                 <div key={app.id} className="hairline rounded-lg bg-white p-5 shadow-card flex flex-col md:flex-row md:items-center justify-between gap-4">
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <span className="font-semibold text-ink text-base">{app.name}</span>
-                      <span className="text-xs font-mono bg-paper border border-line text-ink-soft px-2 py-0.5 rounded uppercase">
-                        {app.type}
-                      </span>
-                      <span className="text-xs text-ink-faint">Submitted {app.submittedAt}</span>
-                    </div>
-                    <div className="mt-2 text-xs sm:text-sm text-ink-soft space-y-1.5">
-                      <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
-                        <p>City: <span className="font-medium text-ink">{app.city}</span></p>
-                        <p>Phone: <span className="font-mono text-ink">{app.phone || 'N/A'}</span></p>
-                        <p>Email: <span className="font-mono text-ink">{app.email}</span></p>
+                  <div className="flex items-start gap-3.5">
+                    {(app.profilePhoto || app.applicationData?.profilePhoto) ? (
+                      <img
+                        src={app.profilePhoto || app.applicationData?.profilePhoto}
+                        alt={app.name}
+                        className="w-12 h-12 rounded-full object-cover border border-teal-500 shrink-0 mt-0.5"
+                      />
+                    ) : (
+                      <div className="w-12 h-12 rounded-full bg-teal-50 border border-teal-200 flex items-center justify-center shrink-0 text-teal-700 font-semibold text-sm">
+                        {app.name.charAt(0)}
                       </div>
-
-                      {app.portfolio && (
-                        <p>
-                          Portfolio Link:{' '}
-                          <a
-                            href={app.portfolio.startsWith('http') ? app.portfolio : `https://${app.portfolio}`}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="text-teal-600 font-medium hover:underline"
-                          >
-                            {app.portfolio}
-                          </a>
-                        </p>
-                      )}
-
-                      {app.bio && (
-                        <p className="text-ink-soft italic bg-paper/60 p-2 rounded text-xs border border-line/60 mt-1">
-                          "{app.bio}"
-                        </p>
-                      )}
-
-                      {app.applicationData && (
-                        <div className="flex flex-wrap gap-2 pt-1 text-[11px]">
-                          {app.applicationData.category && (
-                            <span className="bg-teal-50 text-teal-700 px-2 py-0.5 rounded font-medium">Category: {app.applicationData.category}</span>
-                          )}
-                          {app.applicationData.followers && (
-                            <span className="bg-teal-50 text-teal-700 px-2 py-0.5 rounded font-medium">Followers: {app.applicationData.followers}</span>
-                          )}
-                          {app.applicationData.instagram && (
-                            <span className="bg-paper border border-line text-ink-soft px-2 py-0.5 rounded font-mono">IG: {app.applicationData.instagram}</span>
-                          )}
-                          {app.applicationData.youtube && (
-                            <span className="bg-paper border border-line text-ink-soft px-2 py-0.5 rounded font-mono">YT: {app.applicationData.youtube}</span>
-                          )}
+                    )}
+                    <div>
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="font-semibold text-ink text-base">{app.name}</span>
+                        <span className="text-xs font-mono bg-paper border border-line text-ink-soft px-2 py-0.5 rounded uppercase">
+                          {app.type}
+                        </span>
+                        <span className="text-xs text-ink-faint">Submitted {app.submittedAt}</span>
+                      </div>
+                      <div className="mt-2 text-xs sm:text-sm text-ink-soft space-y-1.5">
+                        <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+                          <p>City: <span className="font-medium text-ink">{app.city}</span></p>
+                          <p>Phone: <span className="font-mono text-ink">{app.phone || 'N/A'}</span></p>
+                          <p>Email: <span className="font-mono text-ink">{app.email}</span></p>
                         </div>
-                      )}
+
+                        {app.portfolio && (
+                          <p>
+                            Portfolio Link:{' '}
+                            <a
+                              href={app.portfolio.startsWith('http') ? app.portfolio : `https://${app.portfolio}`}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="text-teal-600 font-medium hover:underline"
+                            >
+                              {app.portfolio}
+                            </a>
+                          </p>
+                        )}
+
+                        {app.bio && (
+                          <p className="text-ink-soft italic bg-paper/60 p-2 rounded text-xs border border-line/60 mt-1">
+                            "{app.bio}"
+                          </p>
+                        )}
+
+                        {app.applicationData && (
+                          <div className="flex flex-wrap gap-2 pt-1 text-[11px]">
+                            {app.applicationData.category && (
+                              <span className="bg-teal-50 text-teal-700 px-2 py-0.5 rounded font-medium">Category: {app.applicationData.category}</span>
+                            )}
+                            {app.applicationData.followers && (
+                              <span className="bg-teal-50 text-teal-700 px-2 py-0.5 rounded font-medium">Followers: {app.applicationData.followers}</span>
+                            )}
+                            {app.applicationData.instagram && (
+                              <span className="bg-paper border border-line text-ink-soft px-2 py-0.5 rounded font-mono">IG: {app.applicationData.instagram}</span>
+                            )}
+                            {app.applicationData.youtube && (
+                              <span className="bg-paper border border-line text-ink-soft px-2 py-0.5 rounded font-mono">YT: {app.applicationData.youtube}</span>
+                            )}
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
 

@@ -112,6 +112,7 @@ export interface JoinFormData {
   bio: string
   portfolio: string
   services: string[]
+  profilePhoto?: string
   // creator-specific
   instagram?: string
   youtube?: string

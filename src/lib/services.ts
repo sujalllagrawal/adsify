@@ -15,6 +15,7 @@ export interface ApplicationRecord {
   type: string
   portfolio: string
   bio?: string
+  profilePhoto?: string
   applicationData?: Record<string, any>
   status: 'pending' | 'approved' | 'rejected'
 }
@@ -120,6 +121,7 @@ export async function fetchApplications(): Promise<ApplicationRecord[]> {
         type: item.applicant_type || 'creator',
         portfolio: item.portfolio || '',
         bio: item.bio || '',
+        profilePhoto: item.application_data?.profilePhoto || '',
         applicationData: item.application_data || {},
         status: (item.status === 'approved' || item.status === 'rejected' ? item.status : 'pending') as 'pending' | 'approved' | 'rejected',
       }))
@@ -144,6 +146,7 @@ export async function fetchApplications(): Promise<ApplicationRecord[]> {
         type: parsed.applicantType,
         portfolio: parsed.portfolio,
         bio: parsed.bio,
+        profilePhoto: parsed.profilePhoto,
         applicationData: parsed,
         status: 'pending',
       })
