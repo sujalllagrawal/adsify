@@ -8,6 +8,10 @@ import { fetchApplications, submitTalentApplication, type ApplicationRecord } fr
 import type { JoinFormData } from '@/types'
 
 export default function Admin() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [passwordInput, setPasswordInput] = useState('')
+  const [authError, setAuthError] = useState('')
+
   const [activeTab, setActiveTab] = useState<'talent' | 'applications' | 'google-forms'>('talent')
   const [searchQuery, setSearchQuery] = useState('')
   const [testSuccessMessage, setTestSuccessMessage] = useState('')
@@ -92,6 +96,60 @@ export default function Admin() {
       t.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
       t.type.toLowerCase().includes(searchQuery.toLowerCase())
   )
+
+  function handleLogin(e: React.FormEvent) {
+    e.preventDefault()
+    if (passwordInput === 'Adsify@2004') {
+      setIsAuthenticated(true)
+      setAuthError('')
+    } else {
+      setAuthError('Invalid administrator password. Access denied.')
+    }
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-[70vh] flex items-center justify-center container-content py-16">
+        <SEO title="Admin Login | Adsify" description="Private Admin Login for Adsify management." />
+        <div className="hairline rounded-xl bg-white p-8 max-w-md w-full shadow-card text-center space-y-6">
+          <div className="w-12 h-12 rounded-full bg-brass-100/60 border border-brass-400/40 text-brass-700 flex items-center justify-center mx-auto">
+            <ShieldCheck size={24} />
+          </div>
+          <div>
+            <h1 className="text-2xl font-semibold text-ink">Adsify Private Admin Portal</h1>
+            <p className="text-xs text-ink-soft mt-1.5">
+              Restricted access for internal moderators only.
+            </p>
+          </div>
+
+          <form onSubmit={handleLogin} className="space-y-4 text-left">
+            <div>
+              <label className="block text-xs font-semibold uppercase tracking-wider text-ink-soft mb-1.5">
+                Admin Password
+              </label>
+              <input
+                type="password"
+                placeholder="Enter password..."
+                value={passwordInput}
+                onChange={(e) => setPasswordInput(e.target.value)}
+                className="w-full rounded-md border border-line bg-paper/50 px-3.5 py-2.5 text-sm focus:border-teal-500 focus:bg-white transition-colors"
+                autoFocus
+              />
+              {authError && (
+                <p className="text-xs text-red-600 mt-1 font-medium">{authError}</p>
+              )}
+            </div>
+            <button
+              type="submit"
+              className="w-full py-2.5 rounded bg-ink text-paper text-sm font-medium hover:bg-teal-600 transition-colors"
+            >
+              Unlock Dashboard
+            </button>
+          </form>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <>

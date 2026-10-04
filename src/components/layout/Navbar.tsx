@@ -50,9 +50,6 @@ export function Navbar() {
               </span>
             )}
           </button>
-          <Link to="/join-adsify" className="text-sm text-ink-soft hover:text-ink px-3 py-2">
-            Join Adsify
-          </Link>
           <Link
             to="/submit-requirement"
             className="text-sm font-medium bg-ink text-paper px-4 py-2.5 rounded hover:bg-teal-600 transition-colors"
@@ -98,13 +95,6 @@ export function Navbar() {
             >
               <Heart size={18} /> Shortlist ({ids.length})
             </button>
-            <Link
-              to="/join-adsify"
-              onClick={() => setMenuOpen(false)}
-              className="py-3.5 text-lg border-b border-line text-ink"
-            >
-              Join Adsify
-            </Link>
             <Link
               to="/submit-requirement"
               onClick={() => setMenuOpen(false)}

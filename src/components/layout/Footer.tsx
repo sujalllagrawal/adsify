@@ -39,8 +39,6 @@ export function Footer() {
           <h4 className="text-sm font-medium mb-3">Company</h4>
           <ul className="space-y-2 text-sm text-ink-soft">
             <li><Link to="/about" className="hover:text-ink">About Adsify</Link></li>
-            <li><Link to="/join-adsify" className="hover:text-ink">Join as Talent</Link></li>
-            <li><Link to="/admin" className="hover:text-ink text-xs text-brass-500 font-medium">Admin Portal</Link></li>
           </ul>
         </div>
       </div>
